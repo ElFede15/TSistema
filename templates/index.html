@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Contable - Centro de Estudiantes</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <header>
+        <h1>Tesoreria - Centro de Estudiantes</h1>
+    </header>
+    <!-- Aquí se agregarán los mensajes flash si existen -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div id="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {% if category == 'success' %}flash-success{% elif category == 'error' %}flash-error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <!-- Contenedor del menú -->
+    <div class="menu-container">
+        <!-- Menú de usuario -->
+        <button id="user-name-btn">{{ username }}</button>
+    
+        <!-- Menú de opciones -->
+        <div id="user-menu">
+
+            <form id= "logout-form" action="{{ url_for('logout') }}" method="GET" style="display:none;">
+                <button id="cerrar-sesion" type="submit">Cerrar sesión</button>
+            </form>
+            <button id="cerrar-sesion-btn">Cerrar sesión</button>
+
+            <form id="export-form" action="{{ url_for('export') }}" method="GET" style="display:none;">
+                <button id="exportar-historial" type="submit">Exportar historial</button>
+            </form>
+            <button id="exportar-historial-btn">Exportar historial</button>
+
+        </div>
+    </div>
+
+    <a href="javascript:void(0);" id="show-form-btn" class="btn-adda">Añadir Ingresos / Gastos</a>
+    <p></p>
+    <p></p>
+    <!-- Contenedor del formulario oculto -->
+    <div id="form-container" class="form-container" style="display: none;">
+        <form id="form-ingresos-y-gastos" method="POST">
+            <label for="ingreso_gasto">Tipo de ingreso o gasto:</label>
+            <select id="ingreso_gasto" name="ingreso_gasto" required>
+                <option value="" disabled selected style="color: #ff1493;">SELECCIONAR</option>
+                <option value="INGRESO">INGRESO</option>
+                <option value="GASTO">GASTO</option>
+            </select>
+            <p></p>
+            <label for="descripcion">Descripcion del ingreso o gasto:</label>
+            <select id="descripcion" name="descripcion" required>
+                <option value="" disabled selected style="color: #ff1493;">SELECCIONAR</option>
+            </select>
+            <p></p>
+            <div id="ingreso-o-gasto-personalizado-container" style="display: none;">
+                <label for="descripcion2">Nombre del ingreso o Gasto Personalizado:</label>
+                <input type="text" id="descripcion2" name="descripcion2" placeholder="Escribe la descripción del ingreso o gasto">
+            </div>
+            <p></p>
+            <label for="cantidad_unidades">Cantidad de unidades:</label>
+            <input type="number" id="cantidad_unidades" name="cantidad_unidades" placeholder="Cantidad" required min="1" step="1">
+            <p></p>
+            <label for="precio">Precio por unidad:</label>
+            <input type="number" id="precio" name="precio" placeholder="Precio" required min="0.01" step="0.01">
+            <p></p>
+            <div class="button-container">
+                <button type="submit" id="btn-agregar" value="Add">Agregar el ingreso o gasto a la lista</button>
+            </div>
+            <div class="button-container">
+                <button type="button" onclick="hideForm()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+    <p></p>
+    <p></p>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Ingreso / Gasto</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Precio x unidad</th>
+                <th>Precio total</th>
+                <th>Día y hora</th>
+                <th>Usuario</th>
+                <th>Accion</th> <!-- Aquí agregamos el encabezado "Acciones" -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for inga in ingasto %}
+            <tr>
+                <td>{{ inga['ingreso_gasto'] }}</td>
+                <td>{{ inga['descripcion'] }}</td>
+                <td>{{ inga['cantidad_unidades'] }}</td>
+                <td>{{ inga['precio'] }}</td>
+                <td>{{ inga['total'] }}</td>
+                <td>{{ inga['dia'] }}</td>
+                <td>{{ inga['usuario'] }}</td>
+                <td>
+                    <!-- <a href="{{ url_for('edit_inga', inga_id=inga['id']) }}">Editar</a> |  -->
+                    <a href="{{ url_for('delete_inga', inga_id=inga['id']) }}">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p></p>
+    <p id="balance">Balance: $0.00</p>
+    <!-- Botón de actualización -->
+    <div style="position: absolute; right: 30px; top: 40px;">
+        <button id="refresh-btn" class="btn-action">Actualizar</button>
+    </div>
+    <p></p>
+    <p></p>
+    <!-- Botón Exportar -->
+    <div class="button-container">
+        <a href="{{ url_for('export') }}" class="btn-action">Exportar</a>
+    </div>
+    
+    <!-- Botón Logout
+    <div class="button-container">
+        <a href="{{ url_for('logout') }}" class="btn-action">Cerrar sesión</a>
+    </div> -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<script>
+    // Alternar visibilidad del menú de usuario
+    document.getElementById('user-name-btn')?.addEventListener('click', () => {
+        document.getElementById('user-menu').classList.toggle('show');
+        document.getElementById('user-menu').classList.remove('hidden'); // Asegura que no esté oculto
+    });
+
+    // Ocultar el menú al hacer clic en el botón "Exportar historial"
+    document.getElementById('exportar-historial')?.addEventListener('click', () => {
+    document.getElementById('user-menu').classList.remove('show');
+    document.getElementById('user-menu').classList.add('hidden'); // Agrega la clase "hidden" para ocultarlo
+    });
+
+    // Para enviar el formularo al usar el botón Cerrar sesión
+    document.getElementById('cerrar-sesion-btn').addEventListener('click', function() {
+        document.getElementById('logout-form').submit(); // Envia el formulario de logout
+    });
+
+    // Para enviar el formularo al usar el botón Exportar historial
+    document.getElementById('exportar-historial-btn').addEventListener('click', function() {
+        document.getElementById('export-form').submit(); // Envia el formulario de exportar
+    });
+
+// Calcular balance de los ingresos y gastos
+function calcularBalance() {
+    let balance = 0;
+    const rows = document.querySelectorAll('table tbody tr');
+
+    rows.forEach(row => {
+        const tipo = row.cells[0].innerText.trim();
+        const total = parseFloat(row.cells[4].innerText.trim()) || 0;
+
+        if (tipo === 'INGRESO') {
+            balance += total;
+        } else if (tipo === 'GASTO') {
+            balance -= total;
+        }
+    });
+
+    // Mostrar el balance en el párrafo
+    document.getElementById('balance').innerText = `Balance: $${balance.toFixed(2)}`;
+}
+
+// Llamar a la función para calcular el balance al cargar la página
+window.onload = calcularBalance;
+
+// PAra el boton actualizar
+document.getElementById('refresh-btn')?.addEventListener('click', () => {
+    location.reload(); // Recarga la página cuando el botón es presionado
+});
+
+// IMPORTANTE PAra el formulario de añadir que agregue en index
+// Mostrar el formulario al hacer clic en el botón "Añadir Ingresos / Gastos"
+document.getElementById('show-form-btn').addEventListener('click', function() {
+    document.getElementById('form-container').style.display = 'block';
+});
+
+// Función para ocultar el formulario
+function hideForm() {
+    document.getElementById('form-container').style.display = 'none';
+}
+
+// Para manejar el envío del formulario sin recargar la página (AJAX)
+document.getElementById('form-ingresos-y-gastos').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevenir el comportamiento por defecto (recarga de página)
+    
+    const formData = new FormData(this);
+    
+    fetch('/add', {
+        method: 'POST',
+        body: formData
+    }).then(response => response.json())
+      .then(data => {
+        // Agregar la nueva fila a la tabla sin recargar la página
+        const table = document.querySelector('table tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${data.ingreso_gasto}</td>
+            <td>${data.descripcion}</td>
+            <td>${data.cantidad_unidades}</td>
+            <td>${data.precio}</td>
+            <td>${data.total}</td>
+            <td>${data.dia}</td>
+            <td>${data.usuario}</td>
+            <td>
+                <a href="/delete/${data.id}">Eliminar</a>
+            </td>
+        `;
+        table.appendChild(newRow);
+
+        // Ocultar el formulario después de agregar el ingreso o gasto
+        hideForm();
+
+        // Calcular el nuevo balance
+        calcularBalance();
+      })
+      .catch(error => {
+        console.error('Error al guardar el ingreso/gasto:', error);
+      });
+});
+
+    // Referencias a los elementos del formulario
+    const ingresoGastoSelect = document.getElementById("ingreso_gasto");
+    const descripcionSelect = document.getElementById("descripcion");
+
+    // Opciones para INGRESO y GASTO
+    const opcionesIngreso = [
+        { value: "Torneo de Truco", label: "Torneo de Truco" },
+        { value: "Torneo de Ajedrez", label: "Torneo de Ajedrez" },
+        { value: "Torneo de E-sports", label: "Torneo de E-sports" },
+        { value: "Bingo", label: "Bingo" },
+        { value: "Personalizado", label: "Personalizado" }
+    ];
+
+    const opcionesGasto = [
+        { value: "Pintura", label: "Pintura" },
+        { value: "Espejos de Plástico Reflectante", label: "Espejos de Plástico Reflectante" },
+        { value: "Picaportes", label: "Picaportes" },
+        { value: "Desodorantes de Ambiente", label: "Desodorantes de Ambiente" },
+        { value: "Plantas", label: "Plantas" },
+        { value: "Personalizado", label: "Personalizado" }
+    ];
+
+    // Función para actualizar las opciones del select descripcion
+    function actualizarDescripcion() {
+        const seleccion = ingresoGastoSelect.value;
+        
+        // Limpiar las opciones actuales del select descripcion
+        descripcionSelect.innerHTML = '<option value="" disabled selected style="color: #ff1493;">SELECCIONAR</option>';
+        
+        // Dependiendo de la opción seleccionada, agregamos las opciones correspondientes
+        let opciones = [];
+        if (seleccion === "INGRESO") {
+            opciones = opcionesIngreso;
+        } else if (seleccion === "GASTO") {
+            opciones = opcionesGasto;
+        }
+        
+        // Agregar las nuevas opciones al select descripcion
+        opciones.forEach(opcion => {
+            const option = document.createElement("option");
+            option.value = opcion.value;
+            option.textContent = opcion.label;
+            descripcionSelect.appendChild(option);
+        });
+    }
+
+    // Escuchar el cambio en el select de tipo de ingreso o gasto
+    ingresoGastoSelect.addEventListener("change", actualizarDescripcion);
+
+    // Mostrar/ocultar campos personalizados para ingresos
+    document.getElementById('descripcion').addEventListener('change', () => {
+    const ingresoDescripcion = document.getElementById('descripcion').value;
+    document.getElementById('ingreso-o-gasto-personalizado-container').style.display = ingresoDescripcion === 'Personalizado' ? 'block' : 'none';
+    });
+
+
+    // Inicializa los campos del formulario
+    document.getElementById("show-form-btn").addEventListener("click", function() {
+        document.getElementById("ingreso_gasto").selectedIndex = 0;  // Seleccionar opción por defecto
+        document.getElementById("descripcion").selectedIndex = 0;   // Seleccionar opción por defecto
+        document.getElementById("descripcion2").value = "";   // Limpiar descripción2
+        document.getElementById('ingreso-o-gasto-personalizado-container').style.display = 'none';
+        document.getElementById("cantidad_unidades").value = "";    // Limpiar cantidad de unidades
+        document.getElementById("precio").value = "";               // Limpiar precio
+    });
+
+</script>
+
+</body>
+</html>

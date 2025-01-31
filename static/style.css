@@ -1,0 +1,472 @@
+        /* Estilo para el contenedor del título y bienvenida */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message {
+            font-size: 18px;
+            color: #6B5B95;
+            margin-right: 30px; /* Agregar un margen derecho para separarlo un poco del borde derecho */
+        }
+
+
+        /* Estilo general del cuerpo de la página  ES LO NUEVO*/
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://www.transparenttextures.com/patterns/diagonal-stripes.png');
+            background-color: #f3e6f0;
+            background-size: cover;
+            color: #4b0082;
+            transition: all 0.3s ease;
+        }
+
+        /* Estilo del encabezado */
+        header {
+            background-color: rgba(138, 43, 226, 0.8);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.5);
+            border-bottom: 2px solid #9370db;
+        }
+
+        header h1 {
+            font-size: 36px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Estilo del menú */
+        #menu {
+            background-color: rgba(147, 112, 219, 0.9);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 10px rgba(138, 43, 226, 0.5);
+        }
+
+        #menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 15px;
+            transition: color 0.3s ease;
+        }
+
+        #menu a:hover {
+            color: #8a2be2;
+            text-decoration: underline;
+        }
+
+        /* Estilo de los formularios */
+        form {
+            margin-top: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(147, 112, 219, 0.5);
+        }
+
+        form h2 {
+            text-align: center;
+            color: #8a2be2;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        form input[type="number"], form input[type="text"], form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #8a2be2;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: rgba(238, 230, 253, 0.8);
+        }
+
+        form button {
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #9370db;
+        }
+
+        /* Estilo de los elementos del historial */
+        #historial {
+            margin-top: 40px;
+        }
+
+        #historial h3 {
+            text-align: center;
+            font-size: 28px;
+            color: #8a2be2;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+        }
+
+        #historial ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #historial li {
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(238, 230, 253, 0.7);
+            box-shadow: 0 4px 10px rgba(138, 43, 226, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        #historial li:hover {
+            transform: scale(1.05);
+        }
+
+        /* Estilo de los botones y el balance */
+        #balance {
+            text-align: center;
+            margin-top: 40px;
+            font-weight: bold;
+            font-size: 26px;
+            color: #8a2be2;
+        }
+
+        #exportar-excel, #borrar-todo {
+            background-color: #8a2be2;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            border: none;
+        }
+
+        #exportar-excel:hover, #borrar-todo:hover {
+            background-color: #9370db;
+        }
+
+
+    /* Contenedor del menú fuera del header */
+    .menu-container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Menú de usuario */
+        #user-name-btn {
+            font-size: 18px;
+            font-weight: bold;
+            color: #880e4f;
+            background-color: #f8bbd0; /* Rosa claro */
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #user-name-btn:hover {
+            background-color: #f48fb1; /* Rosa un poco más oscuro */
+        }
+
+        /* Menú desplegable de opciones */
+        #user-menu {
+            display: none;
+            background-color: #f8bbd0;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            position: absolute;
+            top: 60px; /* Asegura que esté debajo del nombre */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #user-menu.show {
+            opacity: 1;
+            display: block;
+        }
+
+        /* Opciones dentro del menú */
+        #user-menu button {
+            background-color: #880e4f;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        #user-menu button:hover {
+            background-color: #c2185b; /* Rosa más fuerte */
+        }
+
+
+        /* Estilo para el modal de confirmación */
+#confirmacion-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+    justify-content: center;
+    align-items: center;
+}
+
+#confirmacion-modal.show {
+    display: flex; /* Mostrar el modal cuando tiene la clase .show */
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 15px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Sombra suave para iluminación */
+    animation: fadeIn 0.3s ease-in-out; /* Animación para mostrar el modal */
+}
+
+/* Animación de aparición del modal */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-content h3 {
+    color: #ff66b2; /* Rosa suave para el texto */
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Estilo para los botones con líneas */
+button#confirmar-borrar, button#cancelar-borrar {
+    font-family: 'Poppins', sans-serif;
+    padding: 12px 20px;
+    background-color: transparent; /* Fondo transparente */
+    border: 2px solid #ff66b2; /* Borde rosa suave */
+    border-radius: 12px;
+    color: #ff66b2; /* Color del texto rosa */
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+/* Efecto hover para el botón Confirmar */
+button#confirmar-borrar:hover {
+    background-color: #ff66b2; /* Rosa de fondo cuando se pasa el ratón */
+    color: white; /* Cambia el color del texto a blanco */
+    border-color: #ff3385; /* Cambio de borde a un rosa más intenso */
+    transform: scale(1.05); /* Efecto de aumento al pasar el ratón */
+}
+
+/* Efecto hover para el botón Cancelar */
+button#cancelar-borrar:hover {
+    background-color: #ff66b2; /* Rosa de fondo cuando se pasa el ratón */
+    color: white; /* Cambia el color del texto a blanco */
+    border-color: #ff3385; /* Cambio de borde a un rosa más intenso */
+    transform: scale(1.05); /* Efecto de aumento al pasar el ratón */
+}
+
+/* Efecto active (cuando el usuario hace clic) */
+button#confirmar-borrar:active, button#cancelar-borrar:active {
+    transform: scale(0.98); /* Efecto de contracción al hacer clic */
+}
+
+/* Estilo para los botones cuando están en estado de hover y active */
+button#confirmar-borrar:hover, button#cancelar-borrar:hover {
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.hidden {
+    display: none;
+}
+
+        /* Transiciones suaves */
+        body, #menu, form, #historial {
+            transition: all 0.5s ease;
+        }
+
+
+        /* Otros estilos... */
+        
+        /* Estilo para el balance */
+        #balance {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 26px;
+            color: #8a2be2;
+        }
+
+                /* Estilo para los mensajes flash */
+                .flash-message {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid;
+            font-size: 16px;
+        }
+
+        /* Estilo para mensajes de éxito */
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        /* Estilo para mensajes de error */
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        /* Estilo para el botón de "Añadir Ingresos / Gastos" */
+        .btn-adda {
+            display: inline-block;
+            background-color: #8a2be2;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-left: 20px; /* Moverlo 20px hacia la derecha */
+            margin-top: 20px;
+        }
+
+        .btn-adda:hover {
+            background-color: #9370db;
+        }
+
+        /* Contenedor para los botones, para alinearlos uno al lado del otro */
+        .button-container {
+            display: inline-block;
+            margin-left: 20px; /* Moverlo 20px hacia la derecha */
+            margin-right: 20px; /* Espacio entre los botones */
+            margin-top: 10px; /* Espacio superior */
+            margin-bottom: 30px; /* Espacio inferior */
+        }
+
+        /* Estilo común para ambos botones */
+        .btn-action {
+            background-color: #8a2be2;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-action:hover {
+            background-color: #9370db;
+        }
+
+        /* Estilo para centrar la tabla en la página, a partir de aqui los estilos de la tabla */
+        table {
+            margin: 30px auto; /* Centra la tabla horizontalmente y le da un margen superior */
+            border-collapse: collapse; /* Elimina el espacio entre los bordes */
+            width: 80%; /* Le da un ancho más estrecho */
+            background-color: rgba(238, 230, 253, 0.8); /* Fondo de la tabla con transparencia */
+            box-shadow: 0 4px 12px rgba(138, 43, 226, 0.4); /* Sombra para darle profundidad */
+        }
+
+        /* Estilo para las celdas de la tabla */
+        th, td {
+            padding: 12px 20px; /* Espaciado interno de las celdas */
+            text-align: center; /* Centra el texto en las celdas */
+            border: 2px solid #8a2be2; /* Borde con el mismo color que los botones */
+            font-size: 16px; /* Tamaño de fuente */
+            color: #4b0082; /* Color del texto en las celdas */
+        }
+
+        /* Estilo para los encabezados */
+        th {
+            background-color: #8a2be2; /* Fondo morado en los encabezados */
+            color: white; /* Texto blanco en los encabezados */
+            font-weight: bold; /* Negrita en los encabezados */
+        }
+
+        /* Estilo para las filas de la tabla */
+        tr:nth-child(even) {
+            background-color: rgba(147, 112, 219, 0.2); /* Fondo morado claro en las filas pares */
+        }
+
+        tr:nth-child(odd) {
+            background-color: rgba(147, 112, 219, 0.1); /* Fondo morado más suave en las filas impares */
+        }
+
+
+        /* Estilo para las celdas de la última columna con los botones */
+        td:last-child {
+            display: flex;
+            justify-content:space-evenly; /* Distribuye los botones equitativamente */
+            align-items: center;/* Alineación vertical centrada */
+            height: 100%; /* Asegura que la celda ocupe toda la altura disponible */
+            padding: auto; /* Elimina el relleno adicional */
+            border: 2px solid #8a2be2; /* Agrega el borde morado a la celda */
+            box-sizing: border-box; /* Asegura que el borde no afecte el tamaño total de la celda */
+        }
+
+        td:last-child a {
+            margin: 0 10px; /* Espacio entre los botones (izquierda y derecha) */
+            text-decoration: none;
+            color: #8a2be2;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            padding: 10px 16px; /* Agregar algo de espacio alrededor del texto */
+            border-radius: 5px; /* Bordes redondeados en los botones */
+            width: auto; /* Los botones tomarán solo el espacio necesario */
+            text-align: center; /* Asegurarse de que el texto esté centrado */
+        }
+
+        /* Asegurarse de que los enlaces se vean bien al pasar el mouse */
+        td:last-child a:hover {
+            background-color: rgba(138, 43, 226, 0.2); /* Fondo al pasar el mouse */
+            color: #9370db; /* Cambiar el color del texto en hover */
+        }
+
+        /* Estilo para evitar que los enlaces se vean dentro de una caja */
+        td:last-child a:active,
+        td:last-child a:focus {
+            outline: none; /* Elimina el borde de foco si lo hay */
+            box-shadow: none; /* Elimina cualquier sombra no deseada */
+        }        
